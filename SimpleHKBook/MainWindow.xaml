@@ -6,20 +6,25 @@
         xmlns:local="clr-namespace:SimpleHKBook"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="シンプル家計簿" Height="450" Width="800" MinWidth="300">
+        Title="シンプル家計簿" Height="450" Width="800" MinWidth="300" MinHeight="450">
     <Grid>
         <TabControl>
             <TabItem Header="入力" Width="100" Height="30" FontSize="16" FontWeight="Bold">
                 <Grid Background="DarkOrange">
                     <StackPanel>
-                        <Label x:Name="lblPrice" Content="金額" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                        <Label x:Name="lblAmount" Content="金額" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
                         <TextBox
-                            x:Name="txtPrice"
+                            x:Name="txtAmount"
                             InputMethod.IsInputMethodEnabled="False"
                             Margin="0,0,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" FontSize="18"
                         />
-                        <ComboBox x:Name="cmbCategory" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200"/>
+                        <Label x:Name="lblCategory" Content="カテゴリ" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                        <ComboBox x:Name="cmbCategory" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" SelectedIndex="0">
+                            <!--<ComboBoxItem Content="test"/>-->
+                        </ComboBox>
+                        <Label x:Name="lblMemo" Content="メモ" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
                         <TextBox x:Name="txtMemo" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" FontSize="18"/>
+                        <Label x:Name="lblDate" Content="日付" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
                         <DatePicker
                             x:Name="dp"
                             Width="200"
@@ -28,11 +33,11 @@
                             VerticalAlignment="Top"
                             SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"
                         />
-                        <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Background="Brown" Foreground="White"/>
+                        <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Center" Margin="0,40,0,0" VerticalAlignment="Top" Width="200" Background="Brown" Foreground="White" Height="30"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="TabItem" Width="100" Height="30" FontSize="16" FontWeight="Bold">
+            <TabItem Header="一覧" Width="100" Height="30" FontSize="16" FontWeight="Bold">
                 <Grid Background="DarkOrange"/>
             </TabItem>
         </TabControl>
