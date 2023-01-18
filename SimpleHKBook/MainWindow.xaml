@@ -22,6 +22,8 @@
                             x:Name="txtAmount"
                             InputMethod.IsInputMethodEnabled="False"
                             Margin="0,0,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" FontSize="18"
+                            PreviewTextInput="TxtAmount_PreviewTextInput"
+                            CommandManager.PreviewExecuted="TxtAmount_PreviewExecuted"
                         />
                         <Label x:Name="lblCategory" Content="カテゴリ" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
                         <ComboBox x:Name="cmbCategory" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" SelectedIndex="0"/>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,21 +33,6 @@ namespace SimpleHKBook
             InitializeComponent();
 
             SetCmbCategoryItem(expense);
-        }
-
-        /// <summary>
-        /// ラジオボタンの値に応じてコンボボックスのカテゴリを変更
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            var rbt = sender as RadioButton;
-            if (cmbCategory is not null)
-            {
-                if (rbt == rbtExpense) SetCmbCategoryItem(expense); // 支出
-                else if (rbt == rbtIncome) SetCmbCategoryItem(income); // 収入
-            }
         }
 
         /// <summary>
@@ -91,6 +77,38 @@ namespace SimpleHKBook
             cmbCategory.Items.Clear();
             foreach (var item in items[category]) cmbCategory.Items.Add(item);
             cmbCategory.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// ラジオボタンの値に応じてコンボボックスのカテゴリを変更
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var rbt = sender as RadioButton;
+            if (cmbCategory is not null)
+            {
+                if (rbt == rbtExpense) SetCmbCategoryItem(expense); // 支出
+                else if (rbt == rbtIncome) SetCmbCategoryItem(income); // 収入
+            }
+        }
+
+        /// <summary>
+        /// 数字以外のテキストボックスへの入力を制限
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TxtAmount_PreviewTextInput(object sender, TextCompositionEventArgs e) => e.Handled = !new Regex("[0-9]").IsMatch(e.Text);
+
+        /// <summary>
+        /// テキストボックスへの貼り付けを禁止
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TxtAmount_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (e.Command == ApplicationCommands.Paste) e.Handled = true;
         }
     }
 }
