@@ -4,9 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleHKBook"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="シンプル家計簿" Height="450" Width="800">
     <Grid>
+        <TabControl>
+            <TabItem Header="入力" Width="100" Height="30" FontSize="16" FontWeight="Bold">
+                <Grid Background="DarkOrange">
+                    <DatePicker
+                        x:Name="dp"
+                        Width="200"
+                        Margin="0,30,0,0"
+                        FontSize="18"
+                        VerticalAlignment="Top"
+                        SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"
+                    />
+                    <TextBox
+                        x:Name="txtPrice"
+                        InputMethod.IsInputMethodEnabled="False"
+                        Margin="0,166,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" FontSize="18"
+                    />
+                </Grid>
+            </TabItem>
+            <TabItem Header="TabItem" Width="100" Height="30" FontSize="16" FontWeight="Bold">
+                <Grid Background="DarkOrange"/>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </Window>
