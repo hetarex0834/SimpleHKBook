@@ -20,20 +20,46 @@ namespace SimpleHKBook
     /// </summary>
     public partial class MainWindow : Window
     {
+        // カテゴリ
+        private readonly string expense = "expense"; // 支出
+        private readonly string income = "income"; // 収入
+
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
 
-            SetCmbCategoryItem();
+            SetCmbCategoryItem(expense);
         }
 
-        private void SetCmbCategoryItem()
+        /// <summary>
+        /// ラジオボタンの値に応じてコンボボックスのカテゴリを変更
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var rbt = sender as RadioButton;
+            if (cmbCategory is not null)
+            {
+                if (rbt == rbtExpense) SetCmbCategoryItem(expense); // 支出
+                else if (rbt == rbtIncome) SetCmbCategoryItem(income); // 収入
+            }
+        }
+
+        /// <summary>
+        /// コンボボックスにアイテムを設定
+        /// </summary>
+        /// <param name="category">カテゴリ</param>
+        private void SetCmbCategoryItem(in string category)
         {
             var items = new Dictionary<string, string[]>
             {
                 // 支出
                 {
-                    "expense",
+                    expense,
                     new string[]
                     {
                         "食費",
@@ -53,7 +79,7 @@ namespace SimpleHKBook
                 },
                 // 収入
                 {
-                    "income",
+                    income,
                     new string[]
                     {
                         "給料",
@@ -62,7 +88,9 @@ namespace SimpleHKBook
                 },
             };
 
-            foreach (var item in items["expense"]) cmbCategory.Items.Add(item);
+            cmbCategory.Items.Clear();
+            foreach (var item in items[category]) cmbCategory.Items.Add(item);
+            cmbCategory.SelectedIndex = 0;
         }
     }
 }
