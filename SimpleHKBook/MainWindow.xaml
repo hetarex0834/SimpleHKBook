@@ -6,24 +6,30 @@
         xmlns:local="clr-namespace:SimpleHKBook"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="シンプル家計簿" Height="450" Width="800">
+        Title="シンプル家計簿" Height="450" Width="800" MinWidth="300">
     <Grid>
         <TabControl>
             <TabItem Header="入力" Width="100" Height="30" FontSize="16" FontWeight="Bold">
                 <Grid Background="DarkOrange">
-                    <DatePicker
-                        x:Name="dp"
-                        Width="200"
-                        Margin="0,30,0,0"
-                        FontSize="18"
-                        VerticalAlignment="Top"
-                        SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"
-                    />
-                    <TextBox
-                        x:Name="txtPrice"
-                        InputMethod.IsInputMethodEnabled="False"
-                        Margin="0,166,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" FontSize="18"
-                    />
+                    <StackPanel>
+                        <Label x:Name="lblPrice" Content="金額" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+                        <TextBox
+                            x:Name="txtPrice"
+                            InputMethod.IsInputMethodEnabled="False"
+                            Margin="0,0,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" FontSize="18"
+                        />
+                        <ComboBox x:Name="cmbCategory" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200"/>
+                        <TextBox x:Name="txtMemo" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" FontSize="18"/>
+                        <DatePicker
+                            x:Name="dp"
+                            Width="200"
+                            Margin="0,0,0,0"
+                            FontSize="18"
+                            VerticalAlignment="Top"
+                            SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"
+                        />
+                        <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" Background="Brown" Foreground="White"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="TabItem" Width="100" Height="30" FontSize="16" FontWeight="Bold">
