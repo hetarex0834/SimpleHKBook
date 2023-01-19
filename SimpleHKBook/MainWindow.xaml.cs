@@ -40,11 +40,11 @@ namespace SimpleHKBook
 
             var clms = new Dictionary<string, Type>
                     {
-                        { "date", typeof(DateTime) },
-                        { "group", typeof(string) },
-                        { "category", typeof(object) },
-                        { "amount", typeof(int) },
-                        { "memo", typeof(string) },
+                        { "日付", typeof(string) },
+                        { "区分", typeof(string) },
+                        { "カテゴリ", typeof(object) },
+                        { "金額", typeof(int) },
+                        { "メモ", typeof(string) },
                     };
             foreach (var c in clms) dt.Columns.Add(c.Key, c.Value);
             var serializer = new XmlSerializer(dt.GetType());
@@ -58,6 +58,10 @@ namespace SimpleHKBook
             {
                 using var fs = new FileStream("HKBookData.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
                 serializer.Serialize(fs, dt);
+            }
+            finally
+            {
+                dgd.DataContext = dt;
             }
         }
 
@@ -104,8 +108,7 @@ namespace SimpleHKBook
                 },
             };
 
-            cmbCategory.Items.Clear();
-            foreach (var item in items[group]) cmbCategory.Items.Add(item);
+            cmbCategory.DataContext = items[group];
             cmbCategory.SelectedIndex = 0;
         }
 
@@ -155,11 +158,11 @@ namespace SimpleHKBook
             }
 
             var row = dt.NewRow();
-            row["date"] = dp.SelectedDate;
-            row["group"] = (rbtExpense.IsChecked == true) ? "支出" : "収入";
-            row["category"] = cmbCategory.SelectedItem;
-            row["amount"] = int.Parse(txtAmount.Text);
-            row["memo"] = txtMemo.Text;
+            row["日付"] = $"{dp.SelectedDate:yyyy-MM-dd}";
+            row["区分"] = (rbtExpense.IsChecked == true) ? "支出" : "収入";
+            row["カテゴリ"] = cmbCategory.SelectedItem;
+            row["金額"] = int.Parse(txtAmount.Text);
+            row["メモ"] = txtMemo.Text;
             dt.Rows.Add(row);
 
             using var fs = new FileStream("HKBookData.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
@@ -169,6 +172,7 @@ namespace SimpleHKBook
             MessageBox.Show("保存しました。", "保存完了", MessageBoxButton.OK, MessageBoxImage.Information);
             txtAmount.Text = "";
             txtMemo.Text = "";
+            dgd.DataContext = dt;
         }
     }
 }
