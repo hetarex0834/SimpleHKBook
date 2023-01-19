@@ -38,7 +38,7 @@
                             VerticalAlignment="Top"
                             SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"
                         />
-                        <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Center" Margin="0,40,0,0" Width="200" Background="Brown" Foreground="White" Height="30"/>
+                        <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Center" Margin="0,40,0,0" Width="200" Background="Brown" Foreground="White" Height="30" Click="BtnSave_Click"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
