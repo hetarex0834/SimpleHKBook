@@ -21,13 +21,12 @@ using System.Xml.Serialization;
 namespace SimpleHKBook
 {
     /// <summary>
+    /// シンプル家計簿
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        // データテーブル
         private readonly DataTable dt = new("HKBookData");
-        // 収支区分
         private readonly string expense = "expense"; // 支出
         private readonly string income = "income"; // 収入
 
@@ -40,14 +39,26 @@ namespace SimpleHKBook
             SetCmbCategoryItem(expense);
 
             var clms = new Dictionary<string, Type>
-            {
-                { "date", typeof(DateTime) },
-                { "group", typeof(string) },
-                { "category", typeof(object) },
-                { "amount", typeof(int) },
-                { "memo", typeof(string) },
-            };
+                    {
+                        { "date", typeof(DateTime) },
+                        { "group", typeof(string) },
+                        { "category", typeof(object) },
+                        { "amount", typeof(int) },
+                        { "memo", typeof(string) },
+                    };
             foreach (var c in clms) dt.Columns.Add(c.Key, c.Value);
+            var serializer = new XmlSerializer(dt.GetType());
+
+            try
+            {
+                using var fs = new FileStream("HKBookData.xml", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                dt = serializer.Deserialize(fs) as DataTable ?? new("HKBookData");
+            }
+            catch
+            {
+                using var fs = new FileStream("HKBookData.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                serializer.Serialize(fs, dt);
+            }
         }
 
         /// <summary>
