@@ -22,6 +22,7 @@
                             x:Name="txtAmount"
                             InputMethod.IsInputMethodEnabled="False"
                             Margin="0,0,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" FontSize="18"
+                            TextAlignment="Right"
                             PreviewTextInput="TxtAmount_PreviewTextInput"
                             CommandManager.PreviewExecuted="TxtAmount_PreviewExecuted"
                         />
@@ -44,10 +45,22 @@
             </TabItem>
             <TabItem Header="一覧" Width="100" Height="30" FontSize="16" FontWeight="Bold">
                 <Grid Background="DarkOrange">
-                    <DataGrid x:Name="dgd" ItemsSource="{Binding}" Background="LightGoldenrodYellow" IsReadOnly="True"/>
+                    <StackPanel>
+                    <DataGrid x:Name="dgd" ItemsSource="{Binding}" Background="DarkOrange" IsReadOnly="True" CanUserAddRows="False" FontSize="18" MaxHeight="500"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,6,0">
+                            <Label x:Name="lblTotal" Content="金額" Height="40" FontSize="20" HorizontalAlignment="Right"/>
+                            <TextBox
+                                x:Name="txtTotal"
+                                InputMethod.IsInputMethodEnabled="False"
+                                Margin="0,0,0,0" TextWrapping="NoWrap" VerticalAlignment="Center" Width="200" FontSize="18"
+                                TextAlignment="Right"
+                                IsReadOnly="True"
+                                HorizontalAlignment="Right"
+                            />
+                        </StackPanel>
+                    </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>
-
     </Grid>
 </Window>

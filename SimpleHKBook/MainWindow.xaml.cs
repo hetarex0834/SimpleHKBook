@@ -50,6 +50,7 @@ namespace SimpleHKBook
             finally
             {
                 dgd.DataContext = dt;
+                SetTotalValue();
             }
         }
 
@@ -62,7 +63,7 @@ namespace SimpleHKBook
             {
                 { "日付", typeof(string) },
                 { "区分", typeof(string) },
-                { "カテゴリ", typeof(object) },
+                { "カテゴリ", typeof(string) },
                 { "金額", typeof(int) },
                 { "メモ", typeof(string) },
             };
@@ -91,6 +92,27 @@ namespace SimpleHKBook
             using var fs = new FileStream("HKBookData.xml", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var serializer = new XmlSerializer(dt.GetType());
             dt = serializer.Deserialize(fs) as DataTable ?? new("HKBookData");
+        }
+
+        /// <summary>
+        /// txtTotalに集計結果を設定
+        /// </summary>
+        private void SetTotalValue()
+        {
+            int total = 0;
+            foreach (DataRow r in dt.Rows)
+            {
+                switch (r["区分"])
+                {
+                    case "支出":
+                        total -= (int)r["金額"];
+                        break;
+                    case "収入":
+                        total += (int)r["金額"];
+                        break;
+                }
+            }
+            txtTotal.Text = $"{total:#,0}";
         }
 
         /// <summary>
@@ -160,17 +182,14 @@ namespace SimpleHKBook
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TxtAmount_PreviewTextInput(object sender, TextCompositionEventArgs e) => e.Handled = !new Regex("[0-9]").IsMatch(e.Text);
+        private void TxtAmount_PreviewTextInput(object sender, TextCompositionEventArgs e) => e.Handled = new Regex("[^0-9]").IsMatch(e.Text);
 
         /// <summary>
         /// txtAmountへの貼り付けを禁止
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TxtAmount_PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (e.Command == ApplicationCommands.Paste) e.Handled = true;
-        }
+        private void TxtAmount_PreviewExecuted(object sender, ExecutedRoutedEventArgs e) => e.Handled = e.Command == ApplicationCommands.Paste;
 
         /// <summary>
         /// 入力結果を保存
@@ -190,7 +209,7 @@ namespace SimpleHKBook
                 var row = dt.NewRow();
                 row["日付"] = $"{dp.SelectedDate:yyyy-MM-dd}";
                 row["区分"] = (rbtExpense.IsChecked == true) ? "支出" : "収入";
-                row["カテゴリ"] = cmbCategory.SelectedItem;
+                row["カテゴリ"] = $"{cmbCategory.SelectedItem}";
                 row["金額"] = int.Parse(txtAmount.Text);
                 row["メモ"] = txtMemo.Text;
                 dt.Rows.Add(row);
@@ -202,13 +221,18 @@ namespace SimpleHKBook
             }
             catch
             {
-                MessageBox.Show("保存ファイルとテーブルの整合性が合いませんでした。", "保存ファイル不整合", MessageBoxButton.OK, MessageBoxImage.Error);
-                InitDataTable();
-                SaveDataTableToXml();
+                if (MessageBox.Show("保存ファイルとテーブルの整合性が確認できませんでした。\nファイルを初期化しますか？",
+                                               "保存ファイル不整合", MessageBoxButton.OKCancel, MessageBoxImage.Error) == MessageBoxResult.OK)
+                {
+                    InitDataTable();
+                    SaveDataTableToXml();
+                    MessageBox.Show("ファイルを初期化しました。", "初期化完了", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             finally
             {
                 dgd.DataContext = dt;
+                SetTotalValue();
             }
         }
     }
