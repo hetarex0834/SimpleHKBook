@@ -44,7 +44,7 @@
             </TabItem>
             <TabItem Header="一覧" Width="100" Height="30" FontSize="16" FontWeight="Bold">
                 <Grid Background="DarkOrange">
-                    <DataGrid x:Name="dgd" ItemsSource="{Binding}" Background="LightGoldenrodYellow"/>
+                    <DataGrid x:Name="dgd" ItemsSource="{Binding}" Background="LightGoldenrodYellow" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
         </TabControl>

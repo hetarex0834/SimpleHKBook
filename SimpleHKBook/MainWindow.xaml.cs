@@ -26,7 +26,7 @@ namespace SimpleHKBook
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly DataTable dt = new("HKBookData");
+        private DataTable dt = new("HKBookData");
         private readonly string expense = "expense"; // 支出
         private readonly string income = "income"; // 収入
 
@@ -37,32 +37,60 @@ namespace SimpleHKBook
         {
             InitializeComponent();
             SetCmbCategoryItem(expense);
-
-            var clms = new Dictionary<string, Type>
-                    {
-                        { "日付", typeof(string) },
-                        { "区分", typeof(string) },
-                        { "カテゴリ", typeof(object) },
-                        { "金額", typeof(int) },
-                        { "メモ", typeof(string) },
-                    };
-            foreach (var c in clms) dt.Columns.Add(c.Key, c.Value);
-            var serializer = new XmlSerializer(dt.GetType());
+            InitDataTable();
 
             try
             {
-                using var fs = new FileStream("HKBookData.xml", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                dt = serializer.Deserialize(fs) as DataTable ?? new("HKBookData");
+                LoadXmlToDataTable();
             }
             catch
             {
-                using var fs = new FileStream("HKBookData.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-                serializer.Serialize(fs, dt);
+                SaveDataTableToXml();
             }
             finally
             {
                 dgd.DataContext = dt;
             }
+        }
+
+        /// <summary>
+        /// DataTableを初期化
+        /// </summary>
+        private void InitDataTable()
+        {
+            var clms = new Dictionary<string, Type>
+            {
+                { "日付", typeof(string) },
+                { "区分", typeof(string) },
+                { "カテゴリ", typeof(object) },
+                { "金額", typeof(int) },
+                { "メモ", typeof(string) },
+            };
+
+            dt.Clear();
+            dt.Rows.Clear();
+            dt.Columns.Clear();
+            foreach (var c in clms) dt.Columns.Add(c.Key, c.Value);
+        }
+
+        /// <summary>
+        /// DataTableの内容をXML形式でファイル保存
+        /// </summary>
+        private void SaveDataTableToXml()
+        {
+            using var fs = new FileStream("HKBookData.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            var serializer = new XmlSerializer(dt.GetType());
+            serializer.Serialize(fs, dt);
+        }
+
+        /// <summary>
+        /// XMLファイルの内容をDataTableに読み込む
+        /// </summary>
+        private void LoadXmlToDataTable()
+        {
+            using var fs = new FileStream("HKBookData.xml", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var serializer = new XmlSerializer(dt.GetType());
+            dt = serializer.Deserialize(fs) as DataTable ?? new("HKBookData");
         }
 
         /// <summary>
@@ -157,22 +185,31 @@ namespace SimpleHKBook
                 return;
             }
 
-            var row = dt.NewRow();
-            row["日付"] = $"{dp.SelectedDate:yyyy-MM-dd}";
-            row["区分"] = (rbtExpense.IsChecked == true) ? "支出" : "収入";
-            row["カテゴリ"] = cmbCategory.SelectedItem;
-            row["金額"] = int.Parse(txtAmount.Text);
-            row["メモ"] = txtMemo.Text;
-            dt.Rows.Add(row);
+            try
+            {
+                var row = dt.NewRow();
+                row["日付"] = $"{dp.SelectedDate:yyyy-MM-dd}";
+                row["区分"] = (rbtExpense.IsChecked == true) ? "支出" : "収入";
+                row["カテゴリ"] = cmbCategory.SelectedItem;
+                row["金額"] = int.Parse(txtAmount.Text);
+                row["メモ"] = txtMemo.Text;
+                dt.Rows.Add(row);
+                SaveDataTableToXml();
 
-            using var fs = new FileStream("HKBookData.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            var serializer = new XmlSerializer(dt.GetType());
-            serializer.Serialize(fs, dt);
-
-            MessageBox.Show("保存しました。", "保存完了", MessageBoxButton.OK, MessageBoxImage.Information);
-            txtAmount.Text = "";
-            txtMemo.Text = "";
-            dgd.DataContext = dt;
+                MessageBox.Show("保存しました。", "保存完了", MessageBoxButton.OK, MessageBoxImage.Information);
+                txtAmount.Text = "";
+                txtMemo.Text = "";
+            }
+            catch
+            {
+                MessageBox.Show("保存ファイルとテーブルの整合性が合いませんでした。", "保存ファイル不整合", MessageBoxButton.OK, MessageBoxImage.Error);
+                InitDataTable();
+                SaveDataTableToXml();
+            }
+            finally
+            {
+                dgd.DataContext = dt;
+            }
         }
     }
 }
