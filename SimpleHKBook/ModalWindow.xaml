@@ -1,0 +1,42 @@
+﻿<Window x:Class="SimpleHKBook.ModalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleHKBook"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="シンプル家計簿" Height="550" Width="300" MinWidth="300" MinHeight="550" MaxWidth="300" MaxHeight="550" WindowStartupLocation="CenterOwner">
+    <Grid Background="DarkOrange">
+        <StackPanel Width="NaN">
+            <Label x:Name="lblTitle" Content="シンプル家計簿" Foreground="White" FontSize="28" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,5">
+                <RadioButton x:Name="rbtExpense" Content="支出" Margin="0,0,20,0" IsChecked="True" Checked="RadioButton_Checked" FontSize="18"/>
+                <RadioButton x:Name="rbtIncome" Content="収入" Checked="RadioButton_Checked" FontSize="18"/>
+            </StackPanel>
+            <Label x:Name="lblAmount" Content="金額" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+            <TextBox
+                x:Name="txtAmount"
+                InputMethod.IsInputMethodEnabled="False"
+                Margin="0,0,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" FontSize="18"
+                TextAlignment="Right"
+                PreviewTextInput="TxtAmount_PreviewTextInput"
+                CommandManager.PreviewExecuted="TxtAmount_PreviewExecuted"
+            />
+            <Label x:Name="lblCategory" Content="カテゴリ" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+            <ComboBox x:Name="cmbCategory" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Width="200" SelectedIndex="0" ItemsSource="{Binding}"/>
+            <Label x:Name="lblMemo" Content="メモ" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+            <TextBox x:Name="txtMemo" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" FontSize="18"/>
+            <Label x:Name="lblDate" Content="日付" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
+            <DatePicker
+                x:Name="dp"
+                Width="200"
+                Margin="0,0,0,0"
+                FontSize="18"
+                VerticalAlignment="Top"
+                SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"
+            />
+            <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Center" Margin="0,40,0,0" Width="200" Background="Brown" Foreground="White" Height="30" Click="BtnSave_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -170,7 +170,7 @@ namespace SimpleHKBook
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             var rbt = sender as RadioButton;
-            if (cmbCategory is not null)
+            if (cmbCategory != null)
             {
                 if (rbt == rbtExpense) SetCmbCategoryItem(expense); // 支出
                 else if (rbt == rbtIncome) SetCmbCategoryItem(income); // 収入
@@ -234,6 +234,25 @@ namespace SimpleHKBook
                 dgd.DataContext = dt;
                 SetTotalValue();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Dgd_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (dgd.SelectedItem != null)
+            {
+                //MessageBox.Show(((TextBlock)dgd.Columns[3].GetCellContent(dgd.SelectedItem)).Text);
+                var window = new ModalWindow()
+                {
+                    Owner = GetWindow(this),
+                };
+                window.ShowDialog();
+            }
+            dgd.SelectedItem = null;
         }
     }
 }

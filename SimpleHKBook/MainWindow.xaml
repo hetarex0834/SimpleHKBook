@@ -46,7 +46,12 @@
             <TabItem Header="一覧" Width="100" Height="30" FontSize="16" FontWeight="Bold">
                 <Grid Background="DarkOrange">
                     <StackPanel>
-                    <DataGrid x:Name="dgd" ItemsSource="{Binding}" Background="DarkOrange" IsReadOnly="True" CanUserAddRows="False" FontSize="18" MaxHeight="500"/>
+                        <DataGrid
+                            x:Name="dgd" ItemsSource="{Binding}" Background="DarkOrange"
+                            IsReadOnly="True" CanUserAddRows="False" FontSize="18" MaxHeight="500"
+                            EnableColumnVirtualization="True" EnableRowVirtualization="True"
+                            VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" MouseDoubleClick="Dgd_MouseDoubleClick"
+                        />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,6,0">
                             <Label x:Name="lblTotal" Content="金額" Height="40" FontSize="20" HorizontalAlignment="Right"/>
                             <TextBox
