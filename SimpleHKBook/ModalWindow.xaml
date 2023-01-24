@@ -6,12 +6,12 @@
         xmlns:local="clr-namespace:SimpleHKBook"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="シンプル家計簿" Height="550" Width="300" MinWidth="300" MinHeight="550" MaxWidth="300" MaxHeight="550" WindowStartupLocation="CenterOwner">
+        Title="修正・削除" Height="500" Width="300" MinWidth="300" MinHeight="500" MaxWidth="300" MaxHeight="500" WindowStartupLocation="CenterOwner">
     <Grid Background="DarkOrange">
-        <StackPanel Width="NaN">
-            <Label x:Name="lblTitle" Content="シンプル家計簿" Foreground="White" FontSize="28" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+        <StackPanel>
+            <Label x:Name="lblTitle" Content="修正・削除" Foreground="White" FontSize="28" HorizontalAlignment="Center" Margin="0,10,0,0"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,5">
-                <RadioButton x:Name="rbtExpense" Content="支出" Margin="0,0,20,0" IsChecked="True" Checked="RadioButton_Checked" FontSize="18"/>
+                <RadioButton x:Name="rbtExpense" Content="支出" Margin="0,0,20,0" Checked="RadioButton_Checked" FontSize="18"/>
                 <RadioButton x:Name="rbtIncome" Content="収入" Checked="RadioButton_Checked" FontSize="18"/>
             </StackPanel>
             <Label x:Name="lblAmount" Content="金額" Height="40" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
@@ -36,7 +36,10 @@
                 VerticalAlignment="Top"
                 SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"
             />
-            <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Center" Margin="0,40,0,0" Width="200" Background="Brown" Foreground="White" Height="30" Click="BtnSave_Click"/>
+            <StackPanel Orientation="Horizontal" Margin="0,40,0,0" HorizontalAlignment="Center">
+                <Button x:Name="btnSave" Content="保存" HorizontalAlignment="Left" Margin="0,0,20,0" Width="90" Background="Brown" Foreground="White" Height="30" Click="BtnSave_Click"/>
+                <Button x:Name="btnDelete" Content="削除" HorizontalAlignment="Left" Margin="0,0,0,0" Width="90" Background="Brown" Foreground="White" Height="30" Click="BtnDelete_Click"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

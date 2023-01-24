@@ -55,6 +55,53 @@ namespace SimpleHKBook
         }
 
         /// <summary>
+        /// コンボボックスにアイテムを設定
+        /// </summary>
+        /// <param name="group">区分</param>
+        private void SetCmbCategoryItem(in string group)
+        {
+            var items = new Dictionary<string, string[]>
+            {
+                // 支出
+                {
+                    expense,
+                    new string[]
+                    {
+                        "食費",
+                        "日用品費",
+                        "住居費",
+                        "水道光熱費",
+                        "通信費",
+                        "保険料",
+                        "車両費",
+                        "学費",
+                        "税金",
+                        "交通費",
+                        "医療費",
+                        "被服費",
+                        "美容費",
+                        "交際費",
+                        "娯楽費",
+                        "小遣い",
+                        "その他",
+                    }
+                },
+                // 収入
+                {
+                    income,
+                    new string[]
+                    {
+                        "給料",
+                        "その他",
+                    }
+                },
+            };
+
+            cmbCategory.DataContext = items[group];
+            cmbCategory.SelectedIndex = 0;
+        }
+
+        /// <summary>
         /// DataTableを初期化
         /// </summary>
         private void InitDataTable()
@@ -116,53 +163,6 @@ namespace SimpleHKBook
         }
 
         /// <summary>
-        /// コンボボックスにアイテムを設定
-        /// </summary>
-        /// <param name="group">区分</param>
-        private void SetCmbCategoryItem(in string group)
-        {
-            var items = new Dictionary<string, string[]>
-            {
-                // 支出
-                {
-                    expense,
-                    new string[]
-                    {
-                        "食費",
-                        "日用品費",
-                        "住居費",
-                        "水道光熱費",
-                        "通信費",
-                        "保険料",
-                        "車両費",
-                        "学費",
-                        "税金",
-                        "交通費",
-                        "医療費",
-                        "被服費",
-                        "美容費",
-                        "交際費",
-                        "娯楽費",
-                        "小遣い",
-                        "その他",
-                    }
-                },
-                // 収入
-                {
-                    income,
-                    new string[]
-                    {
-                        "給料",
-                        "その他",
-                    }
-                },
-            };
-
-            cmbCategory.DataContext = items[group];
-            cmbCategory.SelectedIndex = 0;
-        }
-
-        /// <summary>
         /// ラジオボタンの値に応じてコンボボックスの区分を変更
         /// </summary>
         /// <param name="sender"></param>
@@ -207,7 +207,7 @@ namespace SimpleHKBook
             try
             {
                 var row = dt.NewRow();
-                row["日付"] = $"{dp.SelectedDate:yyyy-MM-dd}";
+                row["日付"] = $"{dp.SelectedDate:yyyy/MM/dd}";
                 row["区分"] = (rbtExpense.IsChecked == true) ? "支出" : "収入";
                 row["カテゴリ"] = $"{cmbCategory.SelectedItem}";
                 row["金額"] = int.Parse(txtAmount.Text);
@@ -237,7 +237,7 @@ namespace SimpleHKBook
         }
 
         /// <summary>
-        /// 
+        /// 修正・削除用ウインドウを表示
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -245,8 +245,7 @@ namespace SimpleHKBook
         {
             if (dgd.SelectedItem != null)
             {
-                //MessageBox.Show(((TextBlock)dgd.Columns[3].GetCellContent(dgd.SelectedItem)).Text);
-                var window = new ModalWindow()
+                var window = new ModalWindow(dgd)
                 {
                     Owner = GetWindow(this),
                 };
