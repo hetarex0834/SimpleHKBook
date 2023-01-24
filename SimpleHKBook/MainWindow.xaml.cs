@@ -108,6 +108,7 @@ namespace SimpleHKBook
         {
             var clms = new Dictionary<string, Type>
             {
+                { "ID", typeof(int) },
                 { "日付", typeof(string) },
                 { "区分", typeof(string) },
                 { "カテゴリ", typeof(string) },
@@ -206,7 +207,9 @@ namespace SimpleHKBook
 
             try
             {
+                int id = (dt.Rows.Count > 0) ? Convert.ToInt32(dt.Compute("MAX(ID)", null)) + 1 : 0;
                 var row = dt.NewRow();
+                row["ID"] = id;
                 row["日付"] = $"{dp.SelectedDate:yyyy/MM/dd}";
                 row["区分"] = (rbtExpense.IsChecked == true) ? "支出" : "収入";
                 row["カテゴリ"] = $"{cmbCategory.SelectedItem}";
@@ -251,7 +254,9 @@ namespace SimpleHKBook
                 };
                 window.ShowDialog();
             }
-            dgd.SelectedItem = null;
+            LoadXmlToDataTable();
+            dgd.DataContext = dt;
+            SetTotalValue();
         }
     }
 }
