@@ -144,12 +144,42 @@ namespace SimpleHKBook
         }
 
         /// <summary>
-        /// txtTotalに集計結果を設定
+        /// テキストボックスに集計結果を設定
         /// </summary>
         private void SetTotalValue()
         {
-            int total = 0;
-            foreach (DataRow r in dt.Rows)
+            int cf = 0, total = 0;
+            var dtCf = dt.Clone();
+            var dtTotal = dt.Clone();
+            var cfRows = dt.AsEnumerable();
+            var totalRows = dt.AsEnumerable();
+
+            if (month == 1)
+            {
+                cfRows = cfRows.Where(x => int.Parse($"{x["日付"]}".Split('/')[0]) < year);
+            }
+            else
+            {
+                cfRows = cfRows.Where(x => int.Parse($"{x["日付"]}".Split('/')[0] + $"{x["日付"]}".Split('/')[1]) < year * 100 + month);
+            }
+            totalRows = totalRows.Where(x => int.Parse($"{x["日付"]}".Split('/')[0]) == year)
+                              .Where(x => int.Parse($"{x["日付"]}".Split('/')[1]) == month);
+            foreach (var r in cfRows) dtCf.ImportRow(r);
+            foreach (var r in totalRows) dtTotal.ImportRow(r);
+
+            foreach (DataRow r in dtCf.Rows)
+            {
+                switch (r["区分"])
+                {
+                    case "支出":
+                        cf -= (int)r["金額"];
+                        break;
+                    case "収入":
+                        cf += (int)r["金額"];
+                        break;
+                }
+            }
+            foreach (DataRow r in dtTotal.Rows)
             {
                 switch (r["区分"])
                 {
@@ -161,7 +191,9 @@ namespace SimpleHKBook
                         break;
                 }
             }
-            txtTotal.Text = $"{total:#,0}";
+
+            txtCf.Text = $"{cf:#,0}";
+            txtTotal.Text = $"{cf + total:#,0}";
         }
 
         /// <summary>
