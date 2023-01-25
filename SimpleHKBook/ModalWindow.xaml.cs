@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xaml.Schema;
 using System.Xml.Linq;
 
 namespace SimpleHKBook
@@ -23,13 +24,16 @@ namespace SimpleHKBook
     /// </summary>
     public partial class ModalWindow : Window
     {
-        private readonly string id;
+        private readonly string id; // レコードID
         private readonly string expense = "expense"; // 支出
         private readonly string income = "income"; // 収入
 
         public ModalWindow(DataGrid dgd)
         {
             InitializeComponent();
+
+            id = ((TextBlock)dgd.Columns[0].GetCellContent(dgd.SelectedItem)).Text;
+            dp.Text = ((TextBlock)dgd.Columns[1].GetCellContent(dgd.SelectedItem)).Text;
 
             switch (((TextBlock)dgd.Columns[2].GetCellContent(dgd.SelectedItem)).Text)
             {
@@ -41,10 +45,17 @@ namespace SimpleHKBook
                     break;
             }
 
+            for (var i = 0; i < cmbCategory.Items.Count; i++)
+            {
+                if ($"{cmbCategory.Items[i]}" == ((TextBlock)dgd.Columns[3].GetCellContent(dgd.SelectedItem)).Text)
+                {
+                    cmbCategory.SelectedIndex = i;
+                    break;
+                }
+            }
+
             txtAmount.Text = ((TextBlock)dgd.Columns[4].GetCellContent(dgd.SelectedItem)).Text;
             txtMemo.Text = ((TextBlock)dgd.Columns[5].GetCellContent(dgd.SelectedItem)).Text;
-            dp.Text = ((TextBlock)dgd.Columns[1].GetCellContent(dgd.SelectedItem)).Text;
-            id = ((TextBlock)dgd.Columns[0].GetCellContent(dgd.SelectedItem)).Text;
         }
         
         /// <summary>
@@ -90,7 +101,8 @@ namespace SimpleHKBook
                 },
             };
 
-            cmbCategory.DataContext = items[group];
+            cmbCategory.Items.Clear();
+            foreach (var item in items[group]) cmbCategory.Items.Add(item);
             cmbCategory.SelectedIndex = 0;
         }
 
@@ -137,32 +149,32 @@ namespace SimpleHKBook
             }
 
             var xml = XElement.Load("HKBookData.xml");
-            var info = (from item in xml.Descendants("HKBookData")
-                            where item.Element("ID").Value == $"{id}"
-                            select item).Single();
+            var info = xml.Descendants("HKBookData")
+                           .Where(x => x.Element("ID")!.Value == id)
+                           .Select(x => x).Single();
 
-            info.Element("日付").Value = $"{dp.SelectedDate:yyyy/MM/dd}";
-            info.Element("区分").Value = (rbtExpense.IsChecked == true) ? "支出" : "収入";
-            info.Element("カテゴリ").Value = $"{cmbCategory.SelectedItem}";
-            info.Element("金額").Value = $"{int.Parse(txtAmount.Text)}";
-            info.Element("メモ").Value = txtMemo.Text;
-
+            info.Element("日付")!.Value = $"{dp.SelectedDate:yyyy/MM/dd}";
+            info.Element("区分")!.Value = (rbtExpense.IsChecked == true) ? "支出" : "収入";
+            info.Element("カテゴリ")!.Value = $"{cmbCategory.SelectedItem}";
+            info.Element("金額")!.Value = $"{int.Parse(txtAmount.Text)}";
+            info.Element("メモ")!.Value = txtMemo.Text;
             xml.Save("HKBookData.xml");
+
             MessageBox.Show("保存しました。", "保存完了", MessageBoxButton.OK, MessageBoxImage.Information);
             Close();
         }
 
         /// <summary>
-        /// データを削除
+        /// レコードを削除
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
             var xml = XElement.Load("HKBookData.xml");
-            var info = (from item in xml.Descendants("HKBookData")
-                            where item.Element("ID").Value == id
-                            select item).Single();
+            var info = xml.Descendants("HKBookData")
+                           .Where(x => x.Element("ID")!.Value == id)
+                           .Select(x => x).Single();
 
             info.Remove();
             xml.Save("HKBookData.xml");

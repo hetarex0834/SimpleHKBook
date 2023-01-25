@@ -207,7 +207,7 @@ namespace SimpleHKBook
 
             try
             {
-                int id = (dt.Rows.Count > 0) ? Convert.ToInt32(dt.Compute("MAX(ID)", null)) + 1 : 0;
+                int id = (dt.Rows.Count > 0) ? Convert.ToInt32(dt.Compute("MAX(ID)", null)) + 1 : 1;
                 var row = dt.NewRow();
                 row["ID"] = id;
                 row["日付"] = $"{dp.SelectedDate:yyyy/MM/dd}";
