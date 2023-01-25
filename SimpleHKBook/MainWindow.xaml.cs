@@ -27,8 +27,10 @@ namespace SimpleHKBook
     public partial class MainWindow : Window
     {
         private DataTable dt = new("HKBookData");
-        private readonly string expense = "expense"; // 支出
-        private readonly string income = "income"; // 収入
+        private static readonly string expense = "expense"; // 支出
+        private static readonly string income = "income"; // 収入
+        private int year = DateTime.Now.Year;
+        private int month = DateTime.Now.Month;
 
         /// <summary>
         /// コンストラクタ
@@ -49,8 +51,7 @@ namespace SimpleHKBook
             }
             finally
             {
-                dgd.DataContext = dt;
-                SetTotalValue();
+                ExtractRecordsByDate();
             }
         }
 
@@ -164,6 +165,23 @@ namespace SimpleHKBook
         }
 
         /// <summary>
+        /// 1ヶ月分のレコードを抽出
+        /// </summary>
+        private void ExtractRecordsByDate()
+        {
+            lblSelectedDate.DataContext = (month < 10) ? $"{year}年0{month}月" : $"{year}年{month}月";
+
+            var dt = this.dt.Clone();
+            var rows = this.dt.AsEnumerable()
+                            .Where(x => int.Parse($"{x["日付"]}".Split('/')[0]) == year)
+                            .Where(x => int.Parse($"{x["日付"]}".Split('/')[1]) == month);
+
+            foreach (var row in rows) dt.ImportRow(row);
+            dgd.DataContext = dt;
+            SetTotalValue();
+        }
+
+        /// <summary>
         /// ラジオボタンの値に応じてコンボボックスの区分を変更
         /// </summary>
         /// <param name="sender"></param>
@@ -234,8 +252,7 @@ namespace SimpleHKBook
             }
             finally
             {
-                dgd.DataContext = dt;
-                SetTotalValue();
+                ExtractRecordsByDate();
             }
         }
 
@@ -255,8 +272,39 @@ namespace SimpleHKBook
                 window.ShowDialog();
             }
             LoadXmlToDataTable();
-            dgd.DataContext = dt;
-            SetTotalValue();
+            ExtractRecordsByDate();
+        }
+
+        /// <summary>
+        /// 1ヶ月前のレコードを抽出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnLeft_Click(object sender, RoutedEventArgs e)
+        {
+            if (month == 1)
+            {
+                month = 12;
+                year--;
+            }
+            else month--;
+            ExtractRecordsByDate();
+        }
+
+        /// <summary>
+        /// 1ヶ月後のレコードを抽出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnRight_Click(object sender, RoutedEventArgs e)
+        {
+            if (month == 12)
+            {
+                month = 1;
+                year++;
+            }
+            else month++;
+            ExtractRecordsByDate();
         }
     }
 }

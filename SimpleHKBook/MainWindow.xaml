@@ -46,6 +46,13 @@
             <TabItem Header="一覧" Width="100" Height="30" FontSize="16" FontWeight="Bold">
                 <Grid Background="DarkOrange">
                     <StackPanel>
+                        <StackPanel Background="DarkSlateGray">
+                            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button x:Name="btnLeft" Content="≪" FontSize="24" FontWeight="Bold" Width="40" Background="DarkSlateGray" Foreground="White" Click="BtnLeft_Click"/>
+                                <Label x:Name="lblSelectedDate" Content="{Binding}" Margin="0,0,0,0" FontSize="20" Foreground="White" VerticalAlignment="Top"/>
+                                <Button x:Name="btnRight" Content="≫" FontSize="24" FontWeight="Bold" Width="40" Background="DarkSlateGray" Foreground="White" Click="BtnRight_Click"/>
+                            </StackPanel>
+                        </StackPanel>
                         <DataGrid
                             x:Name="dgd" ItemsSource="{Binding}" Background="DarkOrange"
                             IsReadOnly="True" CanUserAddRows="False" FontSize="18" MaxHeight="500"
